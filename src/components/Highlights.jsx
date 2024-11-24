@@ -7,7 +7,6 @@ import VideoCarousel from "./VideoCarousel";
 
 const Highlights = () => {
   gsap.registerPlugin(ScrollTrigger);
-  const scrollRef = useRef();
   useGSAP(() => {
     gsap.to(".link", {
       opacity: 1,
