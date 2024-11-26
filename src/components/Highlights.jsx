@@ -1,5 +1,4 @@
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
 import { rightImg, watchImg } from "../utils";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
