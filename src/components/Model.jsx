@@ -3,12 +3,13 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import ModelView from "./ModelView";
 import { yellowImg } from "../utils";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import * as THREE from "three";
 import { View } from "@react-three/drei";
 import { models, sizes } from "../constants";
 import { Canvas } from "@react-three/fiber";
+import { animateWithGsapTimeline } from "../utils/animations";
 
 const Model = () => {
   const [size, setSize] = useState("small");
@@ -29,6 +30,24 @@ const Model = () => {
   // rotation
   const [smallRotation, setSmallRotation] = useState(0);
   const [largeRotation, setLargeRotation] = useState(0);
+
+  const tl = gsap.timeline();
+
+  useEffect(() => {
+    if (size === "large") {
+      animateWithGsapTimeline(tl, small, smallRotation, "#view1", "#view2", {
+        transform: "translateX(-100%)",
+        duration: 2,
+      });
+    }
+
+    if (size === "small") {
+      animateWithGsapTimeline(tl, large, largeRotation, "#view2", "#view1", {
+        transform: "translateX(0)",
+        duration: 2,
+      });
+    }
+  }, [size]);
 
   gsap.registerPlugin(ScrollTrigger);
   useGSAP(() => {
