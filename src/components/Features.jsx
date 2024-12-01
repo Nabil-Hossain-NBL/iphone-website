@@ -34,7 +34,7 @@ const Features = () => {
       ease: "power2.inOut",
       duration: 1,
     });
-  });
+  }, []);
   return (
     <section className="h-full common-padding bg-zinc relative overflow-hidden">
       <div className="screen-max-wdith">
