@@ -56,27 +56,34 @@ const VideoCarousel = () => {
       // animation to move the indicator
       let anim = gsap.to(span[videoId], {
         onUpdate: () => {
-          // get the progress of the video
-          const progress = Math.ceil(anim.progress() * 100);
+          // Check if the video is available and has a valid currentTime
+          const videoElement = videoRef.current[videoId];
+          if (videoElement && videoElement.currentTime != null) {
+            const progress = Math.ceil(
+              (videoElement.currentTime /
+                hightlightsSlides[videoId].videoDuration) *
+                100
+            );
 
-          if (progress != currentProgress) {
-            currentProgress = progress;
+            if (progress !== currentProgress) {
+              currentProgress = progress;
 
-            // set the width of the progress bar
-            gsap.to(videoDivRef.current[videoId], {
-              width:
-                window.innerWidth < 760
-                  ? "10vw" // mobile
-                  : window.innerWidth < 1200
-                  ? "10vw" // tablet
-                  : "4vw", // laptop
-            });
+              // set the width of the progress bar
+              gsap.to(videoDivRef.current[videoId], {
+                width:
+                  window.innerWidth < 760
+                    ? "10vw" // mobile
+                    : window.innerWidth < 1200
+                    ? "10vw" // tablet
+                    : "4vw", // laptop
+              });
 
-            // set the background color of the progress bar
-            gsap.to(span[videoId], {
-              width: `${currentProgress}%`,
-              backgroundColor: "white",
-            });
+              // set the background color of the progress bar
+              gsap.to(span[videoId], {
+                width: `${currentProgress}%`,
+                backgroundColor: "white",
+              });
+            }
           }
         },
 
@@ -93,16 +100,19 @@ const VideoCarousel = () => {
         },
       });
 
-      if (videoId == 0) {
+      if (videoId === 0) {
         anim.restart();
       }
 
       // update the progress bar
       const animUpdate = () => {
-        anim.progress(
-          videoRef.current[videoId].currentTime /
-            hightlightsSlides[videoId].videoDuration
-        );
+        const videoElement = videoRef.current[videoId];
+        // Ensure that the video element exists and is ready
+        if (videoElement && videoElement.currentTime != null) {
+          anim.progress(
+            videoElement.currentTime / hightlightsSlides[videoId].videoDuration
+          );
+        }
       };
 
       if (isPlaying) {
@@ -112,6 +122,11 @@ const VideoCarousel = () => {
         // remove the ticker when the video is paused (progress bar is stopped)
         gsap.ticker.remove(animUpdate);
       }
+
+      // Cleanup function to remove ticker when component unmounts or videoId changes
+      return () => {
+        gsap.ticker.remove(animUpdate);
+      };
     }
   }, [videoId, startPlay]);
 
